@@ -3,7 +3,7 @@ import { MongoClient, ServerApiVersion } from 'mongodb';
 
 // Create a MongoDB client
 // NOTE: In production, you should use environment variables for this
-const uri = "mongodb+srv://pruthvirajchavan2002:<password>@test1.cziqhgy.mongodb.net/?retryWrites=true&w=majority&appName=test1";
+const uri = "mongodb+srv://pruthvirajchavan2002:<Pruthviraj@#9423>@test1.cziqhgy.mongodb.net/?retryWrites=true&w=majority&appName=test1";
 
 // Replace <password> with your actual password when testing
 // For security reasons, don't hardcode passwords in your code
