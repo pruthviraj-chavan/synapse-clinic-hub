@@ -78,6 +78,7 @@ const LoginForm = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
+                autoComplete="email"
               />
             </div>
             <div className="grid gap-2">
@@ -94,6 +95,7 @@ const LoginForm = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
+                autoComplete="current-password"
               />
             </div>
             <Button type="submit" className="w-full bg-synapse-purple hover:bg-synapse-deep-purple" disabled={isLoading}>

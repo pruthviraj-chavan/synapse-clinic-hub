@@ -70,7 +70,6 @@ const AppSidebar = () => {
         open ? "w-64" : "w-14"
       )}
       collapsible="icon"
-      defaultCollapsed={false}
     >
       <SidebarContent>
         <SidebarGroup>
