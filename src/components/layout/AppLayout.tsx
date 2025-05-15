@@ -20,7 +20,7 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   }, [navigate]);
 
   return (
-    <SidebarProvider collapsedWidth={56}>
+    <SidebarProvider>
       <div className="min-h-screen flex flex-col w-full">
         <Navbar />
         

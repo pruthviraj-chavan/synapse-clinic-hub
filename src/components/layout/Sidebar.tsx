@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const AppSidebar = () => {
-  const { collapsed } = useSidebar();
+  const sidebarContext = useSidebar();
+  const open = !sidebarContext.state || sidebarContext.state === "expanded";
   const location = useLocation();
   const currentPath = location.pathname;
   const [userRole, setUserRole] = useState<'client' | 'admin' | null>(null);
@@ -66,9 +67,9 @@ const AppSidebar = () => {
     <Sidebar 
       className={cn(
         "border-r border-border bg-white dark:bg-gray-950",
-        collapsed ? "w-14" : "w-64"
+        open ? "w-64" : "w-14"
       )}
-      collapsible
+      collapsible="icon"
       defaultCollapsed={false}
     >
       <SidebarContent>
@@ -79,7 +80,7 @@ const AppSidebar = () => {
               <input
                 className={cn(
                   "w-full bg-transparent pl-7 text-sm outline-none placeholder:text-muted-foreground",
-                  collapsed && "hidden"
+                  !open && "hidden"
                 )}
                 placeholder="Search..."
                 type="search"
@@ -88,7 +89,7 @@ const AppSidebar = () => {
           </div>
 
           <SidebarGroup>
-            <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
+            <SidebarGroupLabel className={!open ? "sr-only" : ""}>
               Navigation
             </SidebarGroupLabel>
 
@@ -99,7 +100,7 @@ const AppSidebar = () => {
                     <SidebarMenuButton asChild>
                       <NavLink to={item.url} end className={getNavCls}>
                         <item.icon className={cn("h-4 w-4", isActive(item.url) && "text-white")} />
-                        {!collapsed && <span>{item.title}</span>}
+                        {open && <span>{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
