@@ -19,7 +19,11 @@ const RegisterForm = () => {
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,6 +76,7 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
+                autoComplete="name"
               />
             </div>
             <div className="grid gap-2">
@@ -85,6 +90,7 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
+                autoComplete="email"
               />
             </div>
             <div className="grid gap-2">
@@ -97,6 +103,7 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
+                autoComplete="new-password"
               />
             </div>
             <div className="grid gap-2">
@@ -109,6 +116,7 @@ const RegisterForm = () => {
                 onChange={handleChange}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
+                autoComplete="new-password"
               />
             </div>
             <Button type="submit" className="w-full bg-synapse-purple hover:bg-synapse-deep-purple" disabled={isLoading}>
