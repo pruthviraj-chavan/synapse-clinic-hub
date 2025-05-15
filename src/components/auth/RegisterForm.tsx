@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { findUserByEmail, createUser } from '@/lib/mongodb';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -40,15 +41,44 @@ const RegisterForm = () => {
 
     setIsLoading(true);
     
-    // Mock registration for now - will connect to MongoDB later
-    setTimeout(() => {
+    try {
+      // Check if user already exists
+      const existingUser = await findUserByEmail(formData.email);
+      
+      if (existingUser) {
+        toast({
+          variant: "destructive",
+          title: "Registration failed",
+          description: "An account with this email already exists.",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Create new user in MongoDB
+      await createUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password, // In production, hash this password
+        role: 'client' // Default role for new users
+      });
+      
       toast({
         title: "Registration successful",
         description: "Your account has been created. You can now log in.",
       });
+      
       navigate('/login');
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast({
+        variant: "destructive",
+        title: "Registration failed",
+        description: "An error occurred during registration. Please try again.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -119,7 +149,11 @@ const RegisterForm = () => {
                 autoComplete="new-password"
               />
             </div>
-            <Button type="submit" className="w-full bg-synapse-purple hover:bg-synapse-deep-purple" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-synapse-purple hover:bg-synapse-deep-purple" 
+              disabled={isLoading}
+            >
               {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </div>

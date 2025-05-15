@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { findUserByEmail } from "@/lib/mongodb";
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -18,9 +18,8 @@ const LoginForm = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Mock authentication for now - will connect to MongoDB later
-    setTimeout(() => {
-      // Demo login logic - in real app we'd validate against database
+    try {
+      // For demo purposes, we'll keep the mock authentication while also trying MongoDB
       if (email === 'admin@example.com' && password === 'password') {
         toast({
           title: "Login successful",
@@ -44,14 +43,51 @@ const LoginForm = () => {
         }));
         navigate('/client-dashboard');
       } else {
-        toast({
-          variant: "destructive",
-          title: "Login failed",
-          description: "Invalid email or password. Please try again.",
-        });
+        // Try to authenticate with MongoDB
+        try {
+          const user = await findUserByEmail(email);
+          if (user && user.password === password) { // In production, use bcrypt to compare passwords
+            toast({
+              title: "Login successful",
+              description: "Welcome back to Synapse Clinic Hub!",
+            });
+            localStorage.setItem('user', JSON.stringify({
+              name: user.name,
+              email,
+              role: user.role
+            }));
+            
+            if (user.role === 'admin') {
+              navigate('/dashboard');
+            } else {
+              navigate('/client-dashboard');
+            }
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Login failed",
+              description: "Invalid email or password. Please try again.",
+            });
+          }
+        } catch (error) {
+          console.error("MongoDB authentication error:", error);
+          toast({
+            variant: "destructive",
+            title: "Login failed",
+            description: "Error connecting to database. Please try again later.",
+          });
+        }
       }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -98,7 +134,11 @@ const LoginForm = () => {
                 autoComplete="current-password"
               />
             </div>
-            <Button type="submit" className="w-full bg-synapse-purple hover:bg-synapse-deep-purple" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-synapse-purple hover:bg-synapse-deep-purple" 
+              disabled={isLoading}
+            >
               {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
           </div>
