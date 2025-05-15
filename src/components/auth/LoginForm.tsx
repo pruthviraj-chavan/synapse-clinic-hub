@@ -14,14 +14,6 @@ const LoginForm = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -83,7 +75,7 @@ const LoginForm = () => {
                 type="email"
                 placeholder="name@example.com"
                 value={email}
-                onChange={handleEmailChange}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
                 autoComplete="email"
@@ -100,7 +92,7 @@ const LoginForm = () => {
                 id="password"
                 type="password"
                 value={password}
-                onChange={handlePasswordChange}
+                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="border-synapse-purple/20 focus:border-synapse-purple"
                 autoComplete="current-password"
